@@ -1,0 +1,14 @@
+cadenaSMR:
+SMR1
+SMR2
+SMR2
+SMR1
+cadenaNN:
+MR
+h
+h
+cadenaNE:
+SMR
+SMR
+SMR
+SMR
