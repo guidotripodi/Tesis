@@ -56,8 +56,9 @@ void printNN(vector<long>arrayMaxRepeat, long n, string cadenaOriginal, long sup
 void NE(vector<long>arrayMaxRepeat, long n, string cadenaOriginal, long supermaximal){
     long longPalabra = 0;
     string cadenaSMR;
-    string cadenaTotal;
+    string cadenaTotal = "#";
     long cantidadCadenas = 0;
+    vector<string> cadenasSMR;
     for (long i = 0; i < n; ++i){
         if(arrayMaxRepeat[i] != n){
             for (long j = arrayMaxRepeat[i]; j <= i; ++j){
@@ -65,19 +66,37 @@ void NE(vector<long>arrayMaxRepeat, long n, string cadenaOriginal, long supermax
                 longPalabra++;
             }
             if (longPalabra == supermaximal){
-                if (cantidadCadenas == 0){
-                    cadenaTotal = cadenaSMR;
-                }else{
-                    cadenaTotal = cadenaTotal + "#" + cadenaSMR;
-                }
                 cantidadCadenas++;
+                cadenaTotal = cadenaTotal + "#" + cadenaSMR;
+                cadenasSMR.push_back(cadenaSMR);
             }
             longPalabra = 0;
             cadenaSMR = "";
         }
     }
-    printNE(cadenaTotal);
+    /*
+    subCadena* subSecuencia = new subCadena[cantidadCadenas];
+    for (long i = 0; i < cantidadCadenas; ++i){
+        subSecuencia[i].prefijo.push_back(todasLasCadenas[i]);
+    }
 
+
+    vector<pair <long int, string> > cadenasSMRValidas;
+    for (long i = 0; i < cantidadCadenas; ++i){
+        cadenasSMRValidas.push_back(printNE(todasLasCadenas[i], subSecuencia, cantidadCadenas));
+    }
+    long tamSecuenciaValida = 0;
+    string cadenaNEValida;
+    for (long i = 0; i < cantidadCadenas; ++i){
+        if (cadenasSMRValidas[i].first > tamSecuenciaValida){
+            cadenaNEValida = cadenasSMRValidas[i].second;
+        }
+    }
+    mostrarHastaPesos(cadenaNEValida);
+*/
+   // cout << cadenaTotal << endl;
+   // cout << cantidadCadenas << endl;
+    printNE(cadenasSMR[0], cantidadCadenas, cadenasSMR);
 }
 
 
@@ -125,15 +144,15 @@ void maxRepeat(string cadenaInicio){
 }
 
 
-void printNE(string secuencia)
+void printNE(string secuencia, long cantidadCadenas, vector<string> cadenasSMR)
 {
-   int tamSecuencia =0;
-   int c=0;
+   long tamSecuencia =0;
+   long c=0;
    tamSecuencia = secuencia.length();
 
    //cuento la cantidad de array necesarios como maximo para separar la cadena
-   int count = 0;
-   for (int i = 1; i <= tamSecuencia; ++i){
+   long count = 0;
+   for (long i = 1; i <= tamSecuencia; ++i){
         count = i + count;
    }
 
@@ -141,94 +160,140 @@ void printNE(string secuencia)
   
    //hago partes
    c = 0;
-    for (int h = 0; h < tamSecuencia; ++h){
-        for (int j = 0; j < tamSecuencia; ++j){
+    for (long h = 0; h < tamSecuencia; ++h){
+        for (long j = 0; j < tamSecuencia; ++j){
             if (j + h >= tamSecuencia){
                 break;
             }
+           // cout << damePalabra(secuencia, h, h+j) << endl;
             subSecuencia[c].prefijo.push_back(damePalabra(secuencia, h, h+j)); 
             c++;
         }
     }
 
-
-
     //busco cantidad de repeticiones de cada particion
-
-    for (int i = 0; i < count; ++i){
+    for (long i = 0; i < count; ++i){
         subSecuencia[i].cantApariciones = cantRepeticiones(secuencia, subSecuencia[i].prefijo[0]).first;
         subSecuencia[i].posicionDeRepeticion = cantRepeticiones(secuencia, subSecuencia[i].prefijo[0]).second;
     }
-    subCadena* subSecuenciaSinRep = new subCadena[count];
-
-    int cantidadSinRepetidos = 0;
-    for (int i = 0; i < count; ++i){
-        if (sinRepetidos(subSecuenciaSinRep, subSecuencia[i].prefijo[0], count)){
-            subSecuenciaSinRep[i].prefijo.push_back(subSecuencia[i].prefijo[0]);
-            subSecuenciaSinRep[i].cantApariciones = subSecuencia[i].cantApariciones;
-            subSecuenciaSinRep[i].posicionDeRepeticion = cantRepeticiones(secuencia, subSecuencia[i].prefijo[0]).second;
-           // mostrarHastaPesos(subSecuenciaSinRep[i].prefijo[0]);
-    //      cout << " Cantidad de apariciones: " << subSecuenciaSinRep[i].cantApariciones << "\n";
-            cantidadSinRepetidos++;
+        //maximo(subSecuencia, count); 
+    for (long i = 0; i < count; ++i){
+        subSecuencia[i].valido = true;
+        for (long j = 0; j < cantidadCadenas; ++j){
+            if (cantRepeticiones(cadenasSMR[j], subSecuencia[i].prefijo[0]).first < 1){
+                subSecuencia[i].valido = false;
+            }
         }
     }
-
-    maximo(subSecuencia, count); 
+    buscoMaximal(subSecuencia, secuencia, count, cantidadCadenas, cadenasSMR);
     delete[] subSecuencia;
-    delete[] subSecuenciaSinRep;
-
 }
 
 
-string damePalabra(string secuencia, int desde, int hasta){
-    int longitud =  hasta-desde+1;
-    int count = secuencia.length();
-    char *palabra = new char[count];
-    int i = 0;
+string damePalabra(string secuencia, long desde, long hasta){
+    long longitud =  hasta-desde+1;
+    string cadena;
+    long i = 0;
     for (i = 0; i < longitud; ++i){
         //cout << "damePalabra" << "\n";
-            palabra[i] =  secuencia[desde+i];
+        if (secuencia[desde+i] == '#'){
+            break;
+        }
+        cadena = cadena + secuencia[desde+i];
     }
-    palabra[i] = '$';
-    for (int i = longitud+1; i < count; ++i){
-        palabra[i] = ' ';
-    }
-    return palabra;
-    delete[] palabra;
+    cadena = cadena + '$';
+    return cadena;
 }
 
-string palabraValidaSinCaracterIndistinguible(string secuencia, int desde, int hasta){
-    int longitud =  hasta-desde+1;
-    int count = secuencia.length();
-    char *palabra = new char[count];
-    int i = 0;
-    for (i = 0; i < longitud; ++i){
-        //cout << "damePalabra" << "\n";
-        if (!(secuencia[desde+i] == '#')){
-            palabra[i] =  secuencia[desde+i];
+
+void buscoMaximal(struct subCadena *subSecuencias, string secuencia, long count, long cantidadCadenas, vector<string> cadenasSMR){
+    std::pair <string,long> palabraMaximal;
+    long tamSecuencia = secuencia.length(); 
+    long cantidadDeMaximales = 0;
+    vector< pair <string,long> > palabrasMaximales;
+    bool esMaximal = false;
+    bool valido = false;
+    long indiceInicial = 0;
+    long indiceFinal = 0;
+    long j = 0;
+//    long tamPalabraMaximal = 0;
+    //cout << "PALABRA MAXIMAL" << endl;
+  //  cout << cantidadCadenas << endl;
+    for (long i = 0; i < count; ++i){
+        if (subSecuencias[i].valido){
+                //es potencial maximal
+                esMaximal = true;
+                j = 0;
+                valido = false;
+                while(esMaximal && !valido){
+                    if (subSecuencias[i].posicionDeRepeticion[j].first-1 >=0){
+                        indiceInicial = subSecuencias[i].posicionDeRepeticion[j].first-1;
+                        indiceFinal = subSecuencias[i].posicionDeRepeticion[j].second;
+                        string palabra = damePalabra(secuencia, indiceInicial,indiceFinal);
+                        if (esValida(palabra, cadenasSMR, cantidadCadenas)){
+                            esMaximal = false;
+                                 break;
+                        }
+                    }
+                    if (subSecuencias[i].posicionDeRepeticion[j].second + 1 < tamSecuencia){
+                        indiceFinal = subSecuencias[i].posicionDeRepeticion[j].second + 1;
+                        string palabra = damePalabra(secuencia, subSecuencias[i].posicionDeRepeticion[j].first, indiceFinal);
+                        if (esValida(palabra, cadenasSMR, cantidadCadenas)){
+                            esMaximal = false;
+                            break;
+
+                        }
+                    }
+                    j++;
+                    if (j == subSecuencias[i].cantApariciones){
+                        valido = true;
+                    }
+                }
+                if (esMaximal && valido){
+                    palabraMaximal.first = subSecuencias[i].prefijo[0];
+                    palabraMaximal.second =  subSecuencias[i].cantApariciones;
+                    palabrasMaximales.push_back(palabraMaximal);
+                    cantidadDeMaximales++;
+          /*          if (tamPalabraMaximal < tamPalabra(palabraMaximal.first)){
+                        tamPalabraMaximal = tamPalabra(palabraMaximal.first);
+                    }*/
+                }
         }
     }
-    palabra[i] = '$';
-    for (int i = longitud+1; i < count; ++i){
-        palabra[i] = ' ';
+   // cout << cantidadDeMaximales;
+    for (long i = 0; i < cantidadDeMaximales; ++i){
+  //      cout << "Maximal " ;
+       // if (tamPalabraMaximal == tamPalabra(palabrasMaximales[i].first)){
+            mostrarHastaPesos(palabrasMaximales[i].first);
+        //}
+     //   cout << "\n";
     }
-    return palabra;
-    delete[] palabra;
+
 }
 
 
- pair <int, vector< pair <int,int> >> cantRepeticiones(string secuencia, string subSecuencia){
 
-  int encontrados = 0;
+bool esValida(string palabra,vector<string> cadenasSMR, long count){
+    for (long i = 0; i < count; ++i){
+        if (cantRepeticiones(cadenasSMR[i], palabra).first <1){
+            return false;
+        }
+    }
+    return true;
+}
+
+ pair <long int, vector< pair <long int ,long int > >> cantRepeticiones(string secuencia, string subSecuencia){
+
+  long encontrados = 0;
   bool valido = false;
   bool salir = false;
-  int c = 0;
-  int j = 0;
-  int count = secuencia.length();
-  vector< pair <int,int> > posicionDeRepeticionTotal;
-  pair <int,int> posicionDeRepeticion;
-  pair <int, vector< pair <int,int> >> cantidadDeAparicionesConPosicion;
-  for (int i = 0; i < count; ++i){
+  long c = 0;
+  long j = 0;
+  long count = secuencia.length();
+  vector< pair <long,long> > posicionDeRepeticionTotal;
+  pair <long,long> posicionDeRepeticion;
+  pair <long, vector< pair <long,long> >> cantidadDeAparicionesConPosicion;
+  for (long i = 0; i < count; ++i){
     if (subSecuencia[0] == secuencia[i]){
         salir = false;
         valido = true;
@@ -259,43 +324,16 @@ string palabraValidaSinCaracterIndistinguible(string secuencia, int desde, int h
 
     }
   }
+ // cout << subSecuencia << " cantidad de apariciones: " << encontrados << endl;
     cantidadDeAparicionesConPosicion.first = encontrados;
     cantidadDeAparicionesConPosicion.second = posicionDeRepeticionTotal;
     return cantidadDeAparicionesConPosicion;
 }
 
-void  maximo(struct subCadena *subSecuencia, int count){
-    int max = subSecuencia[0].cantApariciones;
-    string palabra = subSecuencia[0].prefijo[0];
-    for (int i = 0; i < count; ++i) {
-        if (max <= subSecuencia[i].cantApariciones){
-            max = subSecuencia[i].cantApariciones;
-            palabra = subSecuencia[i].prefijo[0];
-        }
-    }
 
-    //me quedo con el maximo tanto en repeticiones como en tamaño
-    for (int i = 0; i < count; ++i){
-        if (max == subSecuencia[i].cantApariciones) {
-            if (tamPalabra(palabra) < tamPalabra(subSecuencia[i].prefijo[0])){
-                palabra = subSecuencia[i].prefijo[0];
-            }
-        }
-    }
-    std::pair <string,int> palabraMax;
-    //cout << "Maxima ";
-    palabraMax.first = palabra;
-    palabraMax.second = max; 
-  //  cout << " Cantidad de apariciones: " << max << "\n";
-    for (int i = 0; i < max; ++i){
-        mostrarHastaPesos(palabra);
-    }
-
-}
-
-int tamPalabra(string secuencia){
+long tamPalabra(string secuencia){
     bool salir = false;
-    int i = 0;
+    long i = 0;
     while(!salir){
         if (secuencia[i] == '$'){
             salir = true;
@@ -305,35 +343,10 @@ int tamPalabra(string secuencia){
     return i;
 }
 
-bool sinRepetidos(struct subCadena *subSecuencia, string cadenaUnitaria, int count){
-    for (int i = 0; i < count; ++i){
-        if (subSecuencia[i].prefijo.size()>0){
-            if (igualdad(subSecuencia[i].prefijo[0],cadenaUnitaria)){
-                return false;
-            }
-        }   
-
-    }
-    return true;
-}
-
-bool igualdad(string cadenaYaIngresada, string cadenaPorIngresar){
-    if (!(tamPalabra(cadenaYaIngresada) == tamPalabra(cadenaPorIngresar))){
-        return false;
-    }else{
-        for (int i = 0; i < tamPalabra(cadenaYaIngresada); ++i){
-            if (!(cadenaYaIngresada[i] == cadenaPorIngresar[i])){
-                return false;
-            }
-        }
-        return true;
-    }
-} 
-
 void mostrarHastaPesos(string palabra){
 //  cout << "Palabra: ";
-    int count = palabra.length();
-    for (int i = 0; i < count; ++i){
+    long count = palabra.length();
+    for (long i = 0; i < count; ++i){
         if (palabra[i] == '$'){
             break;
         }else{
@@ -342,4 +355,3 @@ void mostrarHastaPesos(string palabra){
     }
     cout << endl;
 }
-

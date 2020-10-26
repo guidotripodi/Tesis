@@ -12,17 +12,16 @@ void printNN(vector<long>arrayMaxRepeat, long n, string cadenaOriginal, long sup
 void NE(vector<long>arrayMaxRepeat, long n, string cadenaOriginal, long supermaximal);
 
 struct subCadena { 
-    int cantApariciones;
+    long cantApariciones;
     std::vector < std::string > prefijo;
-    vector< pair <int,int> > posicionDeRepeticion;
+    vector< pair <long,long> > posicionDeRepeticion;
+    bool valido;
 };
 
-string damePalabra(string secuencia, int desde, int hasta);
-string palabraValidaSinCaracterIndistinguible(string secuencia, int desde, int hasta);
-pair <int, vector< pair <int,int> >> cantRepeticiones(string secuencia, string subSecuencia);
-void  maximo(struct subCadena *subSecuencia, int count);
-int tamPalabra(string secuencia);
-bool sinRepetidos(struct subCadena *subSecuencia, string cadenaUnitaria, int count);
-bool igualdad(string cadenaYaIngresada, string cadenaPorIngresar);
+string damePalabra(string secuencia, long desde, long hasta);
+pair <long, vector< pair <long,long> >> cantRepeticiones(string secuencia, string subSecuencia);
+long tamPalabra(string secuencia);
 void mostrarHastaPesos(string palabra);
-void printNE(string secuencia);
+void printNE(string secuencia, long cantidadCadenas, vector<string> cadenasSMR);
+void buscoMaximal(struct subCadena *subSecuencias, string secuencia, long count, long cantidadCadenas, vector<string> cadenasSMR);
+bool esValida(string palabra,vector<string> cadenasSMR, long count);

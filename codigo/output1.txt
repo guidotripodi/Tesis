@@ -1,0 +1,47 @@
+txt[i] S
+txt[i] M
+txt[i] R
+txt[i] 1
+txt[i] #
+txt[i] S
+txt[i] M
+txt[i] R
+txt[i] 2
+txt[i] #
+txt[i] S
+txt[i] M
+txt[i] R
+txt[i] 2
+txt[i] #
+txt[i] S
+txt[i] M
+txt[i] R
+txt[i] 1
+txt[i] 1
+sufijos 14sufijos 9sufijos 3sufijos 18sufijos 19sufijos 13sufijos 8sufijos 1sufijos 16sufijos 11sufijos 6sufijos 17sufijos 2sufijos 12sufijos 7sufijos 10sufijos 15sufijos 5sufijos 0sufijos 9sufijos 4sufijos 3sufijos 18sufijos 19sufijos 13sufijos 8sufijos 1sufijos 16sufijos 11sufijos 6sufijos 2sufijos 17sufijos 12sufijos 7sufijos 15sufijos 0sufijos 10sufijos 5sufijos 9sufijos 4sufijos 3sufijos 18sufijos 19sufijos 13sufijos 8sufijos 1sufijos 16sufijos 11sufijos 6sufijos 2sufijos 17sufijos 12sufijos 7sufijos 0sufijos 15sufijos 10sufijos 5sufijos 9sufijos 4sufijos 3sufijos 18sufijos 19sufijos 13sufijos 8sufijos 1sufijos 16sufijos 11sufijos 6sufijos 2sufijos 17sufijos 12sufijos 7sufijos 0sufijos 15sufijos 10sufijos 5149431819138116116217127015105
+20
+20
+20
+0
+20
+20
+20
+20
+20
+20
+20
+20
+4
+20
+20
+20
+20
+9
+15
+19
+
+SMR1
+#SMR2#SMR
+#SMR2#SMR
+SMR1
+1

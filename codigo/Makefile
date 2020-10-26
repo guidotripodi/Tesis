@@ -2,35 +2,21 @@ export LC_ALL=C
 CXXFLAGS= -Wall -pedantic -g -ggdb
 LDFLAGS= -lpthread
 
-OBJS=main.o
-OBJS1 = suffix.o 
+OBJS= maxrepeat.o lcp.o
 MAIN=tesis
-SUFFIX = suffix
-ENTRADA = entrada
 
-.PHONY: all
-all: $(MAIN) $(SUFFIX) $(ENTRADA)
+.PHONY: all clean new
+all: $(MAIN)
 
-$(MAIN): $(OBJS)
+$(MAIN): $(OBJS)  
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
-$(SUFFIX): $(OBJS1)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
-$(ENTRADA): $(OBJS2)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+%.o: %.cpp %.h 
+lcp.o: lcp.cpp lcp.h
+maxrepeat.o: maxrepeat.cpp lcp.h
 
-tesis: main.o
-suffix: suffix.o
-entrada: entrada.o
-
-main.o: main.cpp 
-suffix.o: suffix.cpp
-entrada.o: entrada.cpp
-
-.PHONY: clean
 clean:
-	rm -f $(OBJS) $(MAIN) $(OBJS1) $(SUFFIX) $(ENTRADA) $(OBJS2)
+	rm -f $(OBJS) $(MAIN)
 
-.PHONY: new
 new: clean all

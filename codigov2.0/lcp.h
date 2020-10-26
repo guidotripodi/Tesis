@@ -14,6 +14,7 @@ struct suffix
 int cmp(struct suffix a, struct suffix b);
 
 vector<long> buildSuffixArray(string txt, long n);
+vector<long> buildSuffixArrayNE(string txt, long n);
 
 vector<long> kasai(string txt, vector<long> suffixArr);
 

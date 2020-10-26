@@ -67,6 +67,69 @@ vector<long> buildSuffixArray(string txt, long n){
     return  suffixArray;
 }
  
+vector<long> buildSuffixArrayNE(string txt, long n){
+    
+    suffix* sufijos = new suffix[n];
+    
+//Almaceno los sufijos con el index original 
+    for (long i = 0; i < n; i++){
+        if (txt[i] == '#'){
+            break;
+        }
+        sufijos[i].index = i;
+        sufijos[i].rank[0] = txt[i] - 'a';
+        sufijos[i].rank[1] = ((i+1) < n)? (txt[i + 1] - 'a'): -1;
+    }
+ 
+//ordeno los sufijos usando sort (pierdo complejidad)
+    sort(sufijos, sufijos+n, cmp);
+    long* ind = new long[n]; // uso long, sino exploit!
+    
+    for (long k = 4; k < 2*n; k = k*2){
+       // en base al orden voy asignando los valores de cada rank
+        long rank = 0;
+        long prev_rank = sufijos[0].rank[0];
+        sufijos[0].rank[0] = rank;
+        ind[sufijos[0].index] = 0;
+ 
+        for (long i = 1; i < n; i++){
+            // Si el primer rank y los siguientes son los mismos que el del anterior se lo asigno
+            if (sufijos[i].rank[0] == prev_rank &&
+                    sufijos[i].rank[1] == sufijos[i-1].rank[1]){
+                prev_rank = sufijos[i].rank[0];
+                sufijos[i].rank[0] = rank;
+            }
+            else {
+                // Sino se incrementa y seguimos..
+
+                prev_rank = sufijos[i].rank[0];
+                sufijos[i].rank[0] = ++rank;
+            }
+            ind[sufijos[i].index] = i;
+        }
+ 
+        // Asigno nuevo rank
+        for (long i = 0; i < n; i++){
+            long nextindex = sufijos[i].index + k/2;
+            sufijos[i].rank[1] = (nextindex < n)?
+                                  sufijos[ind[nextindex]].rank[0]: -1;
+        }
+ 
+        // ordeno de nuevo, no se me ocurrio otra forma para reducir la complejidad
+        sort(sufijos, sufijos+n, cmp);
+    }
+    
+    delete[] ind;
+    
+    // guardo en el vector de mis sufijos todos los indices
+    vector<long>suffixArray;
+    for (long i = 0; i < n; i++)
+        suffixArray.push_back(sufijos[i].index);
+ 
+    delete[] sufijos;
+    return  suffixArray;
+}
+
 vector<long> kasai(string txt, vector<long> suffixArr)
 // LCP!
 {
